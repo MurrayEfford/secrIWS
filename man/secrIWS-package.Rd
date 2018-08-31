@@ -16,7 +16,7 @@ A set of functions used to reproduce and extend the simulations of Ivan et al. (
 Package: \tab secrIWS\cr
 Type: \tab Package\cr
 Version: \tab 1.1.1\cr
-Date: \tab 2018-07-11\cr
+Date: \tab 2018-09-01\cr
 License: \tab GNU General Public License Version 2 or later\cr
 }
 
