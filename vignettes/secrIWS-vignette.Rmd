@@ -80,6 +80,7 @@ First it is necessary to install the package. This requires the packages 'secrli
 ```{r startup, echo=TRUE, message=FALSE}
 library(secrIWS)
 vignettefolder <- "c:/density secr 3.1/secrIWS/vignettes/"
+allsim <- FALSE  # TRUE to run all simulations, otherwise use saved data
 ```
 
 Each of the five IWS scenarios for home range placement may be simulated with function `runsim`. We start by setting up the trapping grid (grid10) and defining a 'template' for each home range configuration. This works for BVN ranges and the fixed CELLS configurations (template44, template28). Irregular CELLS configurations are constructed later on the fly' with the `build.irregular` function.
@@ -131,27 +132,27 @@ mtext (side = 3, 'Irregular', line = 1, adj = 0)
 
 To perform simulations, we set `SECR = TRUE` and increase the number of replicates. Here is the code. Note we can specify ncores > 1 to use multiple cores (here 7 out of 8 on a quad-core Windows PC), and add arguments `CL` and `start` that are passed to `secr.fit`. Default values of `runsim` arguments specify the 'intermediate' scenario of IWS.
 
-```{r runsim, echo = TRUE, eval = FALSE}
+```{r runsim, echo = TRUE, eval = allsim}
 out <- vector('list', 5)
 names(out) <- letters[1:5]
 nrepl <- 1000
-out$aIWS <- runsim(nrepl, traps = grid10, template = templateCircle, N = 20, detectfn = 'HHN',
-                CL = TRUE, start = list(lambda0 = 0.1, sigma = 10), IWSlowerleft = TRUE,
-                allinside = FALSE, gridaligned = FALSE, ncores = 7)
-out$bIWS <- runsim(nrepl, traps = grid10, template = templateEllipse, N = 20, detectfn = 'HHN', 
-                CL = TRUE, start = list(lambda0 = 0.1, sigma = 10), IWSlowerleft = TRUE,
-                allinside = FALSE, gridaligned = FALSE, ncores = 7)
-out$cIWS <- runsim(nrepl, traps = grid10, template = template44, N = 20, detectfn = 'HHN',
-                CL = TRUE, start=list(lambda0 = 0.1, sigma = 10), IWSlowerleft = TRUE,
-                allinside = FALSE, gridaligned = TRUE, ncores = 7)
-out$dIWS <- runsim(nrepl, traps = grid10, template = template28, N = 20, detectfn = 'HHN',
-                CL = TRUE, start = list(lambda0 = 0.1, sigma = 10),  IWSlowerleft = TRUE, 
-                allinside = FALSE, gridaligned = TRUE, ncores = 7)
-out$eIWS <- runsim(nrepl, traps = grid10, template = build.irregular, N = 20, detectfn = 'HHN',
-                CL = TRUE, start=list(lambda0 = 0.1, sigma = 10),  IWSlowerleft = TRUE,
-                allinside = FALSE, gridaligned = TRUE, ncores = 7)
+out$aIWS <- runsim(nrepl, traps = grid10, template = templateCircle, N = 20, 
+                detectfn = 'HHN', CL = TRUE, start = list(lambda0 = 0.1, sigma = 10),
+                IWSlowerleft = TRUE, allinside = FALSE, gridaligned = FALSE, ncores = 7)
+out$bIWS <- runsim(nrepl, traps = grid10, template = templateEllipse, N = 20, 
+                detectfn = 'HHN', CL = TRUE, start = list(lambda0 = 0.1, sigma = 10),
+                IWSlowerleft = TRUE, allinside = FALSE, gridaligned = FALSE, ncores = 7)
+out$cIWS <- runsim(nrepl, traps = grid10, template = template44, N = 20, 
+                detectfn = 'HHN', CL = TRUE, start=list(lambda0 = 0.1, sigma = 10),
+                IWSlowerleft = TRUE, allinside = FALSE, gridaligned = TRUE, ncores = 7)
+out$dIWS <- runsim(nrepl, traps = grid10, template = template28, N = 20, 
+                detectfn = 'HHN', CL = TRUE, start = list(lambda0 = 0.1, sigma = 10),  
+                IWSlowerleft = TRUE, allinside = FALSE, gridaligned = TRUE, ncores = 7)
+out$eIWS <- runsim(nrepl, traps = grid10, template = build.irregular, N = 20, 
+                detectfn = 'HHN', CL = TRUE, start=list(lambda0 = 0.1, sigma = 10),
+                IWSlowerleft = TRUE, allinside = FALSE, gridaligned = TRUE, ncores = 7)
 ```
-```{r saveout, echo = FALSE, eval = FALSE}
+```{r saveout, echo = FALSE, eval = allsim}
 save(out, file= paste(vignettefolder, 'out0.RData', sep=''))
 ```
 
@@ -161,28 +162,33 @@ The function `plotsim` computes the percentage error for a specified estimator u
 ```{r fig3plots}
 Fig3plots <- function (out, plotnum = 1:5, cols = c('black','black','black','red', 'blue'),
                        true = c('telem', 'total', 'inner'), secrt = FALSE) {
-    par(mfrow=c(3,2), xpd=F, cex = 0.9, pty = 's', mar=c(3,3,0,0), mgp=c(2.2,0.65,0), oma = c(3,3,3,3))
+    par(mfrow = c(3,2), xpd = FALSE, cex = 0.9, pty = 's', mar = c(3,3,0,0),
+        mgp = c(2.2,0.65,0), oma = c(3,3,3,3))
     for (i in plotnum) {
         plotsim(out[[i]], estimator = 'TELEM', type = true[1], lty = 5, col=cols[1],
                 label = c('y','','y','','xy','x')[i])
-        plotsim(out[[i]], estimator = 'MMDM2',  type = true[2], add = TRUE, lty=10, col=cols[2])
-        plotsim(out[[i]], estimator = 'MMDM',  type = true[2], add = TRUE, lty=2, col=cols[3])
-        plotsim(out[[i]], estimator = 'SECR',  type = true[3], add = TRUE, lty=1, col=cols[4])
+        plotsim(out[[i]], estimator = 'MMDM2',  type = true[2], add = TRUE, lty = 10,
+                col = cols[2])
+        plotsim(out[[i]], estimator = 'MMDM',  type = true[2], add = TRUE, lty = 2,
+                col = cols[3])
+        plotsim(out[[i]], estimator = 'SECR',  type = true[3], add = TRUE, lty = 1,
+                col = cols[4])
         if (secrt)
-            plotsim(out[[i]], estimator = 'SECRT', type = true[1], add = TRUE, lty=1, col=cols[5])
-        text (0.04, 88, adj = 0, paste('(', letters[i],')', 
-            c(' BVN circle', ' BVN ellipse', ' 4 x 4', ' 2 x 8', ' Irregular')[i], sep = ''))
+            plotsim(out[[i]], estimator = 'SECRT', type = true[1], add = TRUE, lty=1,
+                    col = cols[5])
+        text (0.04, 88, adj = 0, paste('(', letters[i],')', c(' BVN circle', 
+                ' BVN ellipse', ' 4 x 4', ' 2 x 8', ' Irregular')[i], sep = ''))
         }
     plot(c(0,1), c(0,1), type = 'n', xlab = '', ylab = '', axes = FALSE)
     OK <- 1:(4+secrt)
-    legend (0.1, 0.8, legend = c('Telem75', '1/2 MMDM','Full MMDM', 'ML SECR', 'ML SECR + T')[OK],
-            lty = c(5, 10, 2, 1, 1)[OK], lwd = 1.5, col= cols[OK])
+    legend (0.1, 0.8, legend = c('Telem75', '1/2 MMDM','Full MMDM', 'ML SECR', 
+            'ML SECR + T')[OK], lty = c(5, 10, 2, 1, 1)[OK], lwd = 1.5, col= cols[OK])
 }
 ```
 
 ```{r loadandplot,  fig.height = 10, fig.width = 6, eval = TRUE, message = FALSE, warning = FALSE}
  ## load previously saved simulations
-load(file = paste(vignettefolder, 'out0.RData', sep=''))  
+load(file = "out0.RData")
 Fig3plots(out)
 ```
 
@@ -192,32 +198,32 @@ This is close to Fig. 3 of IWS. There is noticeable bias of SECR estimates in (b
 
 We now re-run the simulations using uniform random placement of home ranges, instead of the idiosyncratic placement used by IWS, by resetting the argument `IWSlowerleft`. The code can fail unpredictably with the message "finite coordinates are needed". The source of this error has not been traced; the solution for now is to re-run the simulations.
 
-```{r runsimrevised, echo = TRUE, eval = FALSE}
+```{r runsimrevised, echo = TRUE, eval = allsim}
 outr <- vector('list', 5)
 names(outr) <- letters[1:5]
 nrepl <- 1000
-outr$a <- runsim(nrepl, traps = grid10, template = templateCircle, N = 20, detectfn = 'HHN',
-                CL = TRUE, start = list(lambda0 = 0.1, sigma = 10), IWSlowerleft = FALSE,
-                allinside = FALSE, gridaligned = FALSE, ncores = 7)
-outr$b <- runsim(nrepl, traps = grid10, template = templateEllipse, N = 20, detectfn = 'HHN',
-                CL = TRUE, start = list(lambda0 = 0.1, sigma = 10), IWSlowerleft = FALSE,
-                allinside = FALSE, gridaligned = FALSE, ncores = 7)
-outr$c <- runsim(nrepl, traps = grid10, template = template44, N = 20, detectfn = 'HHN',
-                CL = TRUE, start=list(lambda0 = 0.1, sigma = 10), IWSlowerleft = FALSE,
-                allinside = FALSE, gridaligned = TRUE, ncores = 7)
-outr$d <- runsim(nrepl, traps = grid10, template = template28, N = 20, detectfn = 'HHN',
-                CL = TRUE, start = list(lambda0 = 0.1, sigma = 10), IWSlowerleft = FALSE,
-                allinside = FALSE, gridaligned = TRUE, ncores = 7)
-outr$e <- runsim(nrepl, traps = grid10, template = build.irregular, N = 20, detectfn = 'HHN',
-                CL = TRUE, start=list(lambda0 = 0.1, sigma = 10), IWSlowerleft = FALSE,
-                allinside = FALSE, gridaligned = TRUE, ncores = 7)
+outr$a <- runsim(nrepl, traps = grid10, template = templateCircle, N = 20,
+             detectfn = 'HHN', CL = TRUE, start = list(lambda0 = 0.1, sigma = 10), 
+             IWSlowerleft = FALSE, allinside = FALSE, gridaligned = FALSE, ncores = 7)
+outr$b <- runsim(nrepl, traps = grid10, template = templateEllipse, N = 20,
+             detectfn = 'HHN', CL = TRUE, start = list(lambda0 = 0.1, sigma = 10),
+             IWSlowerleft = FALSE, allinside = FALSE, gridaligned = FALSE, ncores = 7)
+outr$c <- runsim(nrepl, traps = grid10, template = template44, N = 20, 
+             detectfn = 'HHN', CL = TRUE, start=list(lambda0 = 0.1, sigma = 10),
+             IWSlowerleft = FALSE, allinside = FALSE, gridaligned = TRUE, ncores = 7)
+outr$d <- runsim(nrepl, traps = grid10, template = template28, N = 20, 
+             detectfn = 'HHN', CL = TRUE, start = list(lambda0 = 0.1, sigma = 10),
+             IWSlowerleft = FALSE, allinside = FALSE, gridaligned = TRUE, ncores = 7)
+outr$e <- runsim(nrepl, traps = grid10, template = build.irregular, N = 20, 
+             detectfn = 'HHN', CL = TRUE, start=list(lambda0 = 0.1, sigma = 10),
+             IWSlowerleft = FALSE, allinside = FALSE, gridaligned = TRUE, ncores = 7)
 ```
-```{r saveoutrevised, echo = FALSE, eval=FALSE}
+```{r saveoutrevised, echo = FALSE, eval = allsim}
 save(outr, file= paste(vignettefolder, 'outr.RData', sep=''))
 ```
 
 ```{r loadandplotrevised,  fig.height = 10, fig.width = 6, eval = TRUE, message=FALSE, warning = FALSE}
-load(file = paste(vignettefolder, 'outr.RData', sep='')) ## load previously saved simulations
+load(file = "outr.RData") ## load previously saved simulations
 Fig3plots(outr)
 ```
 
@@ -225,37 +231,41 @@ Fig3plots(outr)
 
 A critical difference between the elongated ranges (ellipse, rectangle, irregular) and the symmetrical ranges (square CELLS, circular BVN) is that the latter would not overlap the 'traps' if centred in the empty 'edge' zone of the arena. We repeat the simulations with enlarged square and circular ranges.
 
-```{r enlarged, eval = TRUE}
+```{r enlarged, eval = allsim}
 outenl <- vector('list', 2)
 names(outenl) <- c('square', 'circle')
 nrepl <- 1000
 templateCircle2 <- templatefn(nx = 1, ny = 1, 
                  sigmaX = 0.921*10*2, sigmaY = 0.921*10*2, spacing = 10)
 template66 <- templatefn(nx = 6, ny = 6, spacing = 10)
-outenl$circle2 <- runsim(nrepl, traps = grid10, template = templateCircle2, N = 20, detectfn = 'HHN',
-                    CL = TRUE, start = list(lambda0 = 0.1, sigma = 10), IWSlowerleft = TRUE,
-                    allinside = FALSE, gridaligned = FALSE, ncores = 7)
-outenl$square <- runsim(nrepl, traps = grid10, template = template66, N = 20, detectfn = 'HHN',
-                   CL = TRUE, start = list(lambda0 = 0.1, sigma = 10), IWSlowerleft = TRUE,
-                   allinside = FALSE, gridaligned = FALSE, ncores = 7)
+outenl$circle2 <- runsim(nrepl, traps = grid10, template = templateCircle2, N = 20,
+                detectfn = 'HHN', CL = TRUE, start = list(lambda0 = 0.1, sigma = 10), 
+                IWSlowerleft = TRUE, allinside = FALSE, gridaligned = FALSE, ncores = 7)
+outenl$square <- runsim(nrepl, traps = grid10, template = template66, N = 20, 
+                detectfn = 'HHN', CL = TRUE, start = list(lambda0 = 0.1, sigma = 10),
+                IWSlowerleft = TRUE, allinside = FALSE, gridaligned = FALSE, ncores = 7)
 ```
 
-```{r saveenl, echo = FALSE}
+```{r saveenl, echo = FALSE, eval = allsim}
 save(outenl, file = paste(vignettefolder, 'outenl.RData', sep=''))
 ```
 
 ```{r plotenl}
-par(mfrow=c(1,2), xpd=F, cex = 0.9, pty = 's', mar=c(3,4,0,0), mgp=c(2.2,0.65,0), oma = c(3,3,3,3))
+load(file = "outenl.RData")
+par(mfrow = c(1,2), xpd = FALSE, cex = 0.9, pty = 's', mar = c(3,4,0,0), 
+    mgp = c(2.2,0.65,0), oma = c(3,3,3,3))
 plotsim(outenl[['circle2']], estimator = 'SECR', type = 'inner', lty = 1, col = 'red')
-plotsim(out[['aIWS']], estimator = 'SECR', type = 'inner', lty = 2, col = 'red', add = TRUE)
+plotsim(out[['aIWS']], estimator = 'SECR', type = 'inner', lty = 2, col = 'red', 
+        add = TRUE)
 text (0.04, 88, adj = 0, '(a) BVN circle, radius x2')
 
 plotsim(outenl[['square']], estimator = 'SECR', type = 'inner', lty = 1, col = 'blue')
-plotsim(out[['cIWS']], estimator = 'SECR', type = 'inner', lty = 2, col = 'blue', add = TRUE)
+plotsim(out[['cIWS']], estimator = 'SECR', type = 'inner', lty = 2, col = 'blue', 
+        add = TRUE)
 text (0.04, 88, adj = 0, '(b) square 6 x 6')
 ```
 
-##Placing all comparisons on an equal footing
+## Placing all comparisons on an equal footing
 
 Each of the three classes of estimator was evaluated by IWS against different 'true densities'. The quest for 'fairness' ultimately penalized both MMDM and SECR. This can be seen by using a common basis of comparison ('telem' from Table 1).
 
