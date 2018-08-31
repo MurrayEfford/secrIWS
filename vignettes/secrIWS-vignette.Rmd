@@ -96,7 +96,7 @@ template28 <- templatefn(nx = 2, ny = 8, spacing = 10)
 
 Plotting realisations is a good way to verify the algorithm. The BVN ranges are plotted at the 95\% activity contour. We assign the result to a variable to hide the numerical output.
 
-```{r BVN, fig.height = 3, fig.width = 6}
+```{r BVN, fig.height = 3, fig.width = 6, warning = FALSE}
 par(mfrow = c(1,2), pty = 's', mar = c(3,3,3,3), cex = 1, xpd = TRUE)
 BVN.a <- runsim(nrepl = 1, traps = grid10, template = templateCircle, N = 20, 
     IWSlowerleft = TRUE, plt = TRUE, allinside = FALSE, gridaligned = FALSE, SECR = FALSE)
@@ -108,7 +108,7 @@ mtext (side = 3, 'BVN ellipses', line = 1, adj = 0)
 
 For rectangular home ranges we shade each cell according to its random utilization. The switch 'IWSlowerleft' forces the particular placement algorithm used by IWS. Lower left cells are marked 'x' and a green dot is added for the home range utilization centroids.
 
-```{r rectangular, fig.height = 3, fig.width = 6}
+```{r rectangular, fig.height = 3, fig.width = 6, warning = FALSE}
 par(mfrow = c(1,2), pty = 's', mar = c(3,3,3,3), cex = 1, xpd = TRUE)
 HR44.c <- runsim(nrepl = 1, traps = grid10, template = template44, N = 20, 
     IWSlowerleft = TRUE, plt = TRUE, allinside = FALSE, gridaligned = TRUE, SECR = FALSE)
@@ -120,7 +120,7 @@ mtext (side = 3, '2 x 8', line = 1, adj = 0)
 
 Irregular ranges are more fun: we pass a function (build.irregular) rather than a template. Here 'x' marks the initial cell. Many are truncated at the boundary of the arena.
 
-```{r irregular, fig.height = 3, fig.width = 6}
+```{r irregular, fig.height = 3, fig.width = 6, warning = FALSE}
 par(mfrow = c(1,2), pty = 's', mar = c(3,3,3,3), cex = 1, xpd = TRUE)
 Irregular.e <- runsim(nrepl = 1, traps = grid10, template = build.irregular, N = 20, 
     IWSlowerleft = TRUE, plt = TRUE, allinside = FALSE, gridaligned = TRUE, SECR = FALSE)
@@ -152,7 +152,7 @@ out$eIWS <- runsim(nrepl, traps = grid10, template = build.irregular, N = 20, de
                 allinside = FALSE, gridaligned = TRUE, ncores = 7)
 ```
 ```{r saveout, echo = FALSE, eval = FALSE}
-save(out, file= paste(vignettefolder, 'out.RData', sep=''))
+save(out, file= paste(vignettefolder, 'out0.RData', sep=''))
 ```
 
 ###Summarising simulations
@@ -182,7 +182,7 @@ Fig3plots <- function (out, plotnum = 1:5, cols = c('black','black','black','red
 
 ```{r loadandplot,  fig.height = 10, fig.width = 6, eval = TRUE, message = FALSE, warning = FALSE}
  ## load previously saved simulations
-load(file = paste(vignettefolder, 'out.RData', sep=''))  
+load(file = paste(vignettefolder, 'out0.RData', sep=''))  
 Fig3plots(out)
 ```
 
