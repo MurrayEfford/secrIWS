@@ -12,7 +12,8 @@ array and generates a set of capture histories. It is used internally by
 }
 \usage{
 
-sim.HRCH(popn, trapsites, p1, noccasions, plt = TRUE, pltHR = TRUE, plttr = TRUE, pltfirst = FALSE)
+sim.HRCH(popn, trapsites, p1, noccasions, plt = TRUE, pltHR = TRUE, plttr = TRUE,
+    pltfirst = FALSE)
 
 }
 
