@@ -1,0 +1,26 @@
+Changes in version 1.1.1 (2018-07-11)
+
+New features
+    o   rebuilt for R 3.5.0
+    o   sim.HRCH() returns 3-D capthist instead of old 2-D
+
+Changes in version 1.1.0 (2016-01-25)
+
+New features
+    o   runsim saves Telem.n (sum of inner overlap of detected animals)
+    o   runsim computes inner.Dhat (SECR realized inner zone density)
+    o   plotsim optionally adds curve for inner.Dhat
+    o   Telem.Dhat returns list instead of scalar
+    o   new function predictPG() returns predicted overlap of bivariate normal 
+        home ranges with a square grid
+
+Changes in version 1.0.1 (2015-05-27)
+
+New features
+    o   TELEM method of IWS
+
+Changes in version 1.0.0 (2015-05-20)
+
+Other
+    o   First version
+    o   discrete renamed gridaligned

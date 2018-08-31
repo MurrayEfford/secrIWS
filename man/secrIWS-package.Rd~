@@ -1,0 +1,76 @@
+\name{secrIWS-package}
+\alias{secrIWS}
+
+\docType{package}
+
+\title{Evaluation of Spatially Explicit Capture-Recapture with Irregular Data}
+
+\description{
+
+A set of functions used to reproduce aspects of Ivan et al. (2013b).
+  
+}
+
+\details{
+\tabular{ll}{
+Package: \tab secrIWS\cr
+Type: \tab Package\cr
+Version: \tab 1.0.2\cr
+Date: \tab 2016-01-24\cr
+License: \tab GNU General Public License Version 2 or later\cr
+}
+
+The important functions in \pkg{secrIWS} are:
+\tabular{ll}{
+  \code{\link{runsim}} \tab \cr
+  \code{\link{templatefn}} \tab \cr
+  \code{\link{build.irregular}} \tab \cr
+  \code{\link{plotsim}} \tab \cr
+}
+
+Other useful functions are:
+\tabular{ll}{
+  \code{\link{plotmaskedge}} \tab  \cr
+  \code{\link{addDistanceToEdge}} \tab  \cr
+  \code{\link{hugginsN}} \tab  \cr
+}
+
+Other internal functions are:
+\tabular{ll}{
+  \code{\link{sim.HRCH}} \tab \cr
+}
+
+Documentation will be provided in a vignette
+\url{../doc/secrIWS-vignette.pdf} and in the pdf version of the help
+pages \url{../doc/secrIWS-manual.pdf}
+
+}
+
+\seealso{
+
+  \code{\link{runsim}}
+  
+}
+
+\references{
+
+Ivan, J. S., White, G. C. and Shenk, T. M. (2013a) Using auxiliary telemetry information to 
+estimate animal density from capture--recapture data. \emph{Ecology} \bold{94}, 809--816.
+
+Ivan, J. S., White, G. C. and Shenk, T. M. (2013b) Using simulation to compare methods for 
+estimating density from capture--recapture data. \emph{Ecology} \bold{94}, 817--826.
+
+}
+
+\author{ Murray Efford \email{murray.efford@otago.ac.nz} }
+
+\examples{
+
+template44 <- templatefn(nx = 4, ny = 4, spacing = 10)
+grid10 <- make.grid(10,10, spacing = 10)
+out1 <- runsim(nrepl = 20, traps = grid10, template = template44, 
+               CL = TRUE, start = list(g0 = 0.1, sigma = 10))
+
+}
+
+\keyword{ package }

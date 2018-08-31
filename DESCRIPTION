@@ -1,0 +1,13 @@
+Package: secrIWS
+Type: Package
+Title: Evaluation of Spatially Explicit Capture-Recapture with Irregular Data
+Version: 1.1.1
+Depends: R (>= 3.0.0), secr(>= 3.0)
+Imports:  MASS, mvtnorm, parallel, rgeos, sp
+Suggests: knitr
+VignetteBuilder: knitr
+Date: 2018-07-11
+Author: Murray Efford
+Maintainer: Murray Efford <murray.efford@otago.ac.nz>
+Description: Functions to approximately reproduce and extend the simulations published by Ivan, White and Shenk in Ecology (2013) 94:817-826.
+License: GPL (>=2)
